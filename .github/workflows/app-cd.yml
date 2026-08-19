@@ -27,5 +27,5 @@ jobs:
       - name: Run Test Container & Verify Health
         run: |
           docker run -d -p 8000:8000 --name test-app iac-demo-app:test
-          curl --retry 5 --retry-delay 2 --retry-connrefused -f http://localhost:8000/health || (docker logs test-app && exit 1)
+          curl --retry 5 --retry-delay 2 --retry-connrefused -f http://127.0.0.1:8000/health || (docker logs test-app && exit 1)
 
