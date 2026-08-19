@@ -12,7 +12,7 @@ app = FastAPI(
 # Configuration de l'instrumentation Prometheus
 instrumentator = Instrumentator(
     should_group_status_codes=False,
-    should_ignore_untargeted_api=False,
+    should_ignore_untemplated=False,
     excluded_handlers=["/metrics"],
 )
 instrumentator.instrument(app).expose(app)
