@@ -15,7 +15,7 @@ instrumentator = Instrumentator(
     should_ignore_untargeted_api=False,
     excluded_handlers=["/metrics"],
 )
-instrumentator.instrument(app).expose(app, endpoint="/metrics")
+instrumentator.instrument(app).expose(app)
 
 START_TIME = time.time()
 ENVIRONMENT = os.getenv("APP_ENV", "development")
