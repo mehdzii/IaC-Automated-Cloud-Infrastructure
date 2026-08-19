@@ -5,6 +5,7 @@ on:
     branches: [ "main" ]
     paths:
       - 'app/**'
+      - '.github/workflows/app-cd.yml'
 
 jobs:
   build-and-test:
@@ -23,8 +24,8 @@ jobs:
           cd app
           docker build -t iac-demo-app:test .
 
-      - name: Run Test Container
+      - name: Run Test Container & Verify Health
         run: |
           docker run -d -p 8000:8000 --name test-app iac-demo-app:test
-          sleep 3
-          curl -f http://localhost:8000/health || exit 1
+          curl --retry 5 --retry-delay 2 --retry-connrefused -f http://localhost:8000/health || (docker logs test-app && exit 1)
+
