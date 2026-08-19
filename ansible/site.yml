@@ -1,0 +1,15 @@
+---
+# Playbook Maître Ansible pour le projet IaC
+
+- name: Configuration de base des serveurs applicatifs (Docker + App)
+  hosts: app_servers
+  become: yes
+  roles:
+    - docker
+    - app
+
+- name: Configuration des serveurs de Monitoring (Prometheus + Grafana)
+  hosts: monitoring_servers
+  become: yes
+  roles:
+    - monitoring

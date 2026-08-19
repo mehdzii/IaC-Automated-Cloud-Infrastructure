@@ -1,0 +1,37 @@
+---
+# Tasks du rôle App - Déploiement de l'API FastAPI dans un conteneur Docker
+
+- name: Créer le répertoire de l'application
+  ansible.builtin.file:
+    path: /opt/iac-app
+    state: directory
+    owner: "{{ ansible_user }}"
+    group: docker
+    mode: '0755'
+
+- name: Copier le code source de l'application FastAPI
+  ansible.builtin.copy:
+    src: "../app/"
+    dest: /opt/iac-app/
+    owner: "{{ ansible_user }}"
+    group: docker
+    mode: '0755'
+
+- name: Builder l'image Docker de l'application
+  community.docker.docker_image:
+    name: iac-demo-app
+    build:
+      path: /opt/iac-app
+    source: build
+    force_source: yes
+
+- name: Lancer le conteneur Docker de l'application FastAPI
+  community.docker.docker_container:
+    name: fastapi-demo
+    image: iac-demo-app
+    state: started
+    restart_policy: always
+    published_ports:
+      - "8000:8000"
+    env:
+      APP_ENV: "{{ app_env }}"

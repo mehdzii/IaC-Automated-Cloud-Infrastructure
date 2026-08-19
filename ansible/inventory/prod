@@ -1,0 +1,12 @@
+[all:vars]
+ansible_user=ubuntu
+ansible_ssh_private_key_file=~/.ssh/id_rsa
+ansible_python_interpreter=/usr/bin/python3
+app_env=production
+
+[app_servers]
+prod-vm-1 ansible_host=10.0.3.4
+prod-vm-2 ansible_host=10.0.3.5
+
+[monitoring_servers]
+prod-vm-1 ansible_host=10.0.3.4

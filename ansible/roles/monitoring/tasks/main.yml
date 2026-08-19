@@ -1,0 +1,50 @@
+---
+# Tasks du rôle Monitoring - Déploiement de Node Exporter, Prometheus et Grafana
+
+- name: Créer le répertoire de configuration pour le monitoring
+  ansible.builtin.file:
+    path: /opt/monitoring/prometheus
+    state: directory
+    owner: "{{ ansible_user }}"
+    group: docker
+    mode: '0755'
+
+- name: Déployer le fichier de configuration prometheus.yml
+  ansible.builtin.template:
+    src: prometheus.yml.j2
+    dest: /opt/monitoring/prometheus/prometheus.yml
+    owner: "{{ ansible_user }}"
+    group: docker
+    mode: '0644'
+
+- name: Lancer le conteneur Node Exporter (Métriques Système)
+  community.docker.docker_container:
+    name: node_exporter
+    image: prom/node-exporter:v1.7.0
+    state: started
+    restart_policy: always
+    published_ports:
+      - "9100:9100"
+
+- name: Lancer le conteneur Prometheus
+  community.docker.docker_container:
+    name: prometheus
+    image: prom/prometheus:v2.50.1
+    state: started
+    restart_policy: always
+    published_ports:
+      - "9090:9090"
+    volumes:
+      - /opt/monitoring/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+
+- name: Lancer le conteneur Grafana (Dashboards)
+  community.docker.docker_container:
+    name: grafana
+    image: grafana/grafana:10.3.3
+    state: started
+    restart_policy: always
+    published_ports:
+      - "3000:3000"
+    env:
+      GF_SECURITY_ADMIN_USER: "admin"
+      GF_SECURITY_ADMIN_PASSWORD: "admin"

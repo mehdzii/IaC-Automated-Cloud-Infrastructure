@@ -1,0 +1,11 @@
+[all:vars]
+ansible_user=ubuntu
+ansible_ssh_private_key_file=~/.ssh/id_rsa
+ansible_python_interpreter=/usr/bin/python3
+app_env=staging
+
+[app_servers]
+staging-vm-1 ansible_host=10.0.2.4
+
+[monitoring_servers]
+staging-vm-1 ansible_host=10.0.2.4

@@ -1,0 +1,30 @@
+name: "App Docker CI/CD"
+
+on:
+  push:
+    branches: [ "main" ]
+    paths:
+      - 'app/**'
+
+jobs:
+  build-and-test:
+    name: "Build Docker Image & Test API"
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build Docker Image
+        run: |
+          cd app
+          docker build -t iac-demo-app:test .
+
+      - name: Run Test Container
+        run: |
+          docker run -d -p 8000:8000 --name test-app iac-demo-app:test
+          sleep 3
+          curl -f http://localhost:8000/health || exit 1
